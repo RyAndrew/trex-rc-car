@@ -187,14 +187,16 @@ static const unsigned char PROGMEM t_rex_jaw_closed[] = {
 #endif
 
 void setup()   {                
-  Serial.begin(115200);
-  Serial.setTimeout(10); //wait only 10ms to read a string with ReadString(). Default = 1000
+  Serial1.begin(115200);
+  Serial1.setTimeout(10); //wait only 10ms to read a string with ReadString(). Default = 1000
 
-  Serial.println("initialized");
+  Serial1.println("initialized");
   
   rgbleds.begin();
   rgbleds.show(); // Initialize all pixels to 'off'
 
+  //wait 1/10 of a second for the screen to initialize
+  delay(100);
   // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
   display.begin(SSD1306_SWITCHCAPVCC, 0x3c);  // initialize with the I2C addr 0x3D (for the 128x64)
   
@@ -219,6 +221,7 @@ bool serialCommandExecuting = 0;
 bool showingText = 0;
 bool serialTextStringReading = 0;
 char serialTextString[22];
+bool showingTextCurrentLineShown = 0;
 unsigned int serialTextLine;
 unsigned int serialTextStringCounter = 0;
 
@@ -246,45 +249,31 @@ void loop() {
   showTrexChomp();
 
 }
-void showText(){
-  if( serialCommand != COMMAND_TEXT ){
-    return;
-  }
-  if(showingText == 0){
-    display.clearDisplay();
-    showingText = 1;
-  }
-
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0,(serialTextLine - 1)*17);
-  display.println(serialTextString);
-
-  display.display();
-
-}
 void readSerialPort(){
 
-  while(Serial.available()){
-
+  while(Serial1.available()){
+    
 //    unsigned long currentLoopTime = millis();
-  
-    Serial.print("serial: ");
+    
 
     if(serialTextStringReading){
-      serialTextString[serialTextStringCounter] = Serial.read();
+      serialTextString[serialTextStringCounter] = Serial1.read();
+      Serial1.print(serialTextString[serialTextStringCounter] );
       serialTextStringCounter++;
       if(serialTextStringCounter > 21){
         serialTextStringCounter = 0;
       }
     }else{
-        serialCommandChar[0] = Serial.read();
+        //wait 6ms for the buffer to fill
+        delay(6);
+        Serial1.println("arduino serial!");
+        serialCommandChar[0] = Serial1.read();
         if( serialCommandChar[0] == COMMAND_TEXT){
           serialCommand = COMMAND_TEXT;
           
           serialTextStringReading=1;
 
-          serialCommandChar[0] = Serial.read();
+          serialCommandChar[0] = Serial1.read();
           serialCommandChar[1] = '\0';
           serialTextLine = atoi(serialCommandChar);
           
@@ -293,21 +282,50 @@ void readSerialPort(){
           showingText=0;
           
           serialCommandChar[1] = '\0';
-          Serial.print(serialCommandChar);
+          Serial1.print(serialCommandChar);
           serialCommand = atoi(serialCommandChar);
         }
-         Serial.print(" - ");
-         Serial.println(serialCommand);
+         Serial1.print(" - ");
+         Serial1.println(serialCommand);
          serialCommandStart = millis();
     }
 
-//   Serial.println(millis()-currentLoopTime);
+//   Serial1.println(millis()-currentLoopTime);
   }
   if(serialTextStringCounter > 0){
     serialTextString[serialTextStringCounter] = '\0';
     serialTextStringReading = 0;
+    Serial1.println();
+    Serial1.print("Arduino Text Serial Cmd: ");
+    Serial1.println(serialTextString);
+    showingTextCurrentLineShown = 0;
   }
   serialTextStringCounter = 0;
+
+}
+void showText(){
+  if( serialCommand != COMMAND_TEXT ){
+    return;
+  }
+  if(showingText == 0){
+    display.clearDisplay();
+    showingText = 1;
+  }
+  if(showingTextCurrentLineShown){
+    return;  
+  }
+  showingTextCurrentLineShown = 1;
+
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  Serial1.print("Arduino Showing Text: ");
+  Serial1.println(serialTextString);
+  Serial1.print("Arduino Showing Text Line: ");
+  Serial1.println(serialTextLine);
+  display.setCursor(0,(serialTextLine - 1)*17);
+  display.println(serialTextString);
+
+  display.display();
 
 }
 void showTrexChomp(){
@@ -332,8 +350,8 @@ void showTrexChomp(){
   display.display();
   lastChomp = millis();
 
-   //Serial.print("t ");
-   //Serial.println(millis()-currentLoopTime);
+   //Serial1.print("t ");
+   //Serial1.println(millis()-currentLoopTime);
 }
 
 //uint16_t pixel, color = 0;
@@ -403,18 +421,18 @@ if(serialCommandExecuting == 1){
     if(millis() - ledCommandBlinkingLastBlink > ledCommandBlinkDuration){
       ledCommandBlinkingLastBlink = millis();
       if(ledCommandBlinkingState == 1){
-        //Serial.println("blinking off!");
+        //Serial1.println("blinking off!");
         rgbleds.clear();
         ledCommandBlinkingState = 0;
       }else{
-        //Serial.println("blinking on!");
+        //Serial1.println("blinking on!");
         rgbleds.setPixelColor(0, *serialCommandColor);
         rgbleds.setPixelColor(1, *serialCommandColor);
         ledCommandBlinkingState = 1;
       }
     }
   }else{
-    //Serial.println("fixed color");
+    //Serial1.println("fixed color");
     rgbleds.setPixelColor(0, *serialCommandColor);
     rgbleds.setPixelColor(1, *serialCommandColor);
   }
