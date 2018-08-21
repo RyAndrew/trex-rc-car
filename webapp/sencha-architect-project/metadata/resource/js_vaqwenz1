@@ -1,0 +1,20 @@
+{
+    "type": "jsresource",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "js_vaqwenz1",
+        "includeInBundle": true,
+        "url": "/lib/ext-6.5-latest/build/packages/charts/modern/charts.js"
+    },
+    "configAlternates": {
+        "designer|userClassName": "string",
+        "includeInBundle": "boolean",
+        "url": "uri"
+    },
+    "name": "js",
+    "designerId": "ba1b60b1-aa59-47c9-bd29-a22025542c35"
+}

@@ -1,0 +1,50 @@
+{
+    "name": "rctrex",
+    "settings": {
+        "cmd": {},
+        "urlPrefixTemplate": "http://localhost:{port}/{path}",
+        "urlPrefix": "http://localhost/",
+        "exportPath": "C:/Users/arymar/Desktop/rc-t-rex",
+        "buildShouldOverwriteIndex": true,
+        "generateArchitectVersion": false,
+        "spacesToIndent": 4,
+        "lineEnding": "CRLF",
+        "genTimestamps": false,
+        "cacheBust": false,
+        "installStatus": "Not Installed",
+        "canvasControls": {
+            "viewportSize": {
+                "name": "Desktop (Auto Expand)",
+                "builtIn": true,
+                "height": null,
+                "width": null
+            },
+            "viewportOrientation": "portrait"
+        }
+    },
+    "xdsVersion": "4.2.3",
+    "xdsBuild": 371,
+    "schemaVersion": 1,
+    "upgradeVersion": 310000000001,
+    "framework": "modern65",
+    "viewOrderMap": {
+        "view": [
+            "b2f39c25-2aa9-445d-8149-537c726e51f5",
+            "5860a2a4-649c-4332-ad24-582babee6904",
+            "c2fcd374-9b5c-4853-ba64-ff821433b1d3"
+        ],
+        "store": [],
+        "controller": [],
+        "model": [],
+        "resource": [
+            "b2447fd4-de55-4461-b94e-71f816bb8684",
+            "0bed7e48-343e-4468-9c92-33f050cfcaf9",
+            "d106f179-4cce-400b-b64e-9d1b1d7b01e5",
+            "ba1b60b1-aa59-47c9-bd29-a22025542c35",
+            "57573090-29f1-4dea-ab65-e720f3c42d5a"
+        ],
+        "app": [
+            "application"
+        ]
+    }
+}
